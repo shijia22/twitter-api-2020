@@ -12,6 +12,11 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER
       },
+      room: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        defaultValue: 'public'
+      },
       message: {
         allowNull: false,
         type: Sequelize.TEXT

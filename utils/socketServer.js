@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken')
 const db = require('../models')
 const Chat = db.Chat
 const User = db.User
+const Direct = db.Direct
 let onlineUser = []
 
 module.exports = async (io) => {
@@ -73,6 +74,40 @@ module.exports = async (io) => {
       // 刪除 onlineUser
       onlineUser = onlineUser.filter((user) => user.id !== id)
       console.log('user disconnected')
+    })
+
+    socket.on('joinPrivate', async (room) => {
+      console.log('user connected')
+      // 從資料庫抓取歷史訊息
+      const record = await Direct.findAll({
+        raw: true,
+        nest: true,
+        where: { room },
+        order: [['createdAt', 'ASC']],
+        include: [
+          {
+            model: User,
+            attributes: ['id', 'name', 'account', 'avatar']
+          }
+        ]
+      })
+      // 載入歷史訊息
+      socket.emit('allMsg', record)
+    })
+    socket.on('direct', async (data) => {
+      console.log(data)
+      const { UserId, room, message, createdAt } = data
+      Direct.create({
+        UserId,
+        message,
+        room
+      })
+      const current = {
+        User: socket.user,
+        message,
+        createdAt
+      }
+      io.emit(room, current)
     })
   })
 }

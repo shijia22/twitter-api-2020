@@ -10,6 +10,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    room: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: 'public'
+    },
     message: {
       type: DataTypes.TEXT,
       allowNull: false,
