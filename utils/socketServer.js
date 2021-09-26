@@ -2,7 +2,6 @@ const jwt = require('jsonwebtoken')
 const db = require('../models')
 const Chat = db.Chat
 const User = db.User
-const Direct = db.Direct
 let onlineUser = []
 
 module.exports = async (io) => {
@@ -34,6 +33,7 @@ module.exports = async (io) => {
       const record = await Chat.findAll({
         raw: true,
         nest: true,
+        where: { room: 'public' },
         order: [['createdAt', 'ASC']],
         include: [
           {
@@ -64,12 +64,10 @@ module.exports = async (io) => {
         createdAt: msg.createdAt,
       }
       io.emit('chatMsg', current)
-      console.log('message: ' + msg.message)
     })
     socket.on('disconnect', () => {
-      console.log(socket.user.name)
       const {id, name} = socket.user
-      const byeMsg = `${name} 下線了，掰掰！`
+      const byeMsg = `${name} 下線了！`
       io.emit('broadcast', { broadcast: byeMsg })
       // 刪除 onlineUser
       onlineUser = onlineUser.filter((user) => user.id !== id)
@@ -77,9 +75,9 @@ module.exports = async (io) => {
     })
 
     socket.on('joinPrivate', async (room) => {
-      console.log('user connected')
+      console.log('user connected to privacy room')
       // 從資料庫抓取歷史訊息
-      const record = await Direct.findAll({
+      const record = await Chat.findAll({
         raw: true,
         nest: true,
         where: { room },
@@ -95,9 +93,8 @@ module.exports = async (io) => {
       socket.emit('allMsg', record)
     })
     socket.on('direct', async (data) => {
-      console.log(data)
       const { UserId, room, message, createdAt } = data
-      Direct.create({
+      await Chat.create({
         UserId,
         message,
         room

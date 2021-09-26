@@ -22,10 +22,7 @@ const io = require('socket.io')(server, {
     credentials: true
   }
 })
-// 前端頁面 for 測試
-app.get('/chat', (req, res) => {
-  res.sendFile(__dirname + '/index.html')
-})
+
 require('./utils/socketServer.js')(io)
 
 app.get('/', (req, res) => res.send('Hello World!'))
