@@ -2,9 +2,22 @@
 
 此 Simple Twitter 為前後分離協作專案，前端使用 Vue.js 框架，後端使用 Express.js + MySQL 開發，此 repo 為提供給前端串接開發之 API 服務。
 
-### API BASE URL
+[Live Demo](https://shijia22.github.io/twitter-front-end-vue-2020/#/admin/login)
+
+```
+前台 test account
+email:  user2@example.com 
+password: 12345678
+
+後台 test account
+email: root@example.com
+password: 12345678
+```
+
+### API
 
 HOST: https://good-simple-twitter.herokuapp.com/
+Document: https://simpletwitterapi1.docs.apiary.io/#reference
 
 ## 🔧  Built With
 
